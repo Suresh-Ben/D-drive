@@ -3,6 +3,7 @@ pragma solidity ^0.8.17;
 
 error UnDefinedAddress();
 error UserAlreadyAdded();
+error AccessDeclined();
 
 contract Drive {
 
@@ -17,6 +18,20 @@ contract Drive {
     mapping( address => address[] ) allowed;
 
     mapping( address => address[] ) allowedBy;
+
+    function UserName(address user) external view returns(string memory) {
+        return drive[user].name;
+    }
+
+    function PushFile(string calldata file) external returns(bool) {
+        drive[msg.sender].files.push(file);
+
+        return true;
+    }
+
+    function Display() external view returns(string[] memory) {
+        return drive[msg.sender].files;
+    }
 
     function Allow(address user) external returns(bool) {
         if( allowedMap[msg.sender][user] == true ) revert UserAlreadyAdded();
@@ -57,18 +72,14 @@ contract Drive {
         return true;
     }
 
-    function UserName() external view returns(string memory) {
-        return drive[msg.sender].name;
+    function SharedDrives() external view returns(address[] memory) {
+        return allowedBy[msg.sender];
     }
 
-    function PushFile(string calldata file) external returns(bool) {
-        drive[msg.sender].files.push(file);
+    function DisplayShared(address user) external view returns(string[] memory) {
+        if(allowedMap[user][msg.sender] == false) revert AccessDeclined();
 
-        return true;
-    }
-
-    function Display() external view returns(string[] memory) {
-        return drive[msg.sender].files;
+        return drive[user].files;
     }
     
 }
