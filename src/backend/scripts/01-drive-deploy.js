@@ -1,5 +1,3 @@
-const { ethers } = require("hardhat");
-
 async function main() {
     const [deploy] = await ethers.getSigner();
     const Drive = await ethers.getContractFactory("Drive");
