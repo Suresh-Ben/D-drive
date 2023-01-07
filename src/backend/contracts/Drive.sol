@@ -23,6 +23,10 @@ contract Drive {
         return drive[user].name;
     }
 
+    function SetName(string memory name) external {
+        drive[msg.sender].name = name;
+    }
+
     function PushFile(string calldata file) external returns(bool) {
         drive[msg.sender].files.push(file);
 
